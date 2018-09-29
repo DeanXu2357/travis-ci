@@ -4,6 +4,7 @@ namespace App;
 
 use App\Interfaces\iProfile;
 use App\Interfaces\iToken;
+use App\Interfaces\ILogger;
 use App\Utilities\ProfileDao;
 use App\Utilities\RsaTokenDao;
 
@@ -11,11 +12,13 @@ class AuthService
 {
     private $profile;
     private $token;
+    private $logger;
 
-    public function __construct(iProfile $profile = null, iToken $token = null)
+    public function __construct(iProfile $profile = null, iToken $token = null, ILogger $logger = null)
     {
         $this->profile = $profile ?: new ProfileDao();
         $this->token = $token ?: new RsaTokenDao();
+        $this->logger = $logger;// ?: new Logger();
     }
 
     public function isValid($account, $password)
@@ -36,6 +39,7 @@ class AuthService
         if ($isValid) {
             return true;
         } else {
+            $this->logger->save(sprintf("account: %s try to login failed", $account));
             return false;
         }
     }
