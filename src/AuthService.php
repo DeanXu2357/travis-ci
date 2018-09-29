@@ -30,7 +30,7 @@ class AuthService
         // $rsaToken = new RsaTokenDao();
         $randomCode = $this->token->getRandom($account);
 
-        var_dump($randomCode);
+        // var_dump($randomCode);
 
         # authencation
         $validPassword = $passwordFromDao . $randomCode;

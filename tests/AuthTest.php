@@ -15,17 +15,30 @@ namespace Tests {
     use App\Interfaces\iProfile;
     use App\Interfaces\iToken;
     use App\Interfaces\ILogger;
+    use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
     class AuthenticationServiceTest extends TestCase
     {
+        use MockeryPHPUnitIntegration;
+
         private $stubProfile;
         private $stubToken;
+        private $mockLogger;
+        private $target;
 
         protected function setUp()
         {
             parent::setUp();
             $this->stubProfile = m::mock(iProfile::class);
             $this->stubToken = m::mock(iToken::class);
+
+            $this->mockLogger = m::mock(ILogger::class);
+
+            $this->target = new AuthService(
+                $this->stubProfile,
+                $this->stubToken,
+                $this->mockLogger
+            );
         }
 
         /** @test */
@@ -37,15 +50,23 @@ namespace Tests {
             $this->shouldBeValid('joey', '91000000', true);
         }
 
-        // public function test_should_log_account_when_inValid()
-        // {
-        //     # code
-        //     $this->givenPassword('joey', '91');
-        //     $this->givenToken('000000');
+        public function test_should_log_account_when_inValid()
+        {
+            # code
+            $this->givenPassword('joey', '91');
+            $this->givenToken('000000');
 
-        //     $mockLogger = m::mock(ILogger::class);
+            $this->mockLogger->shouldReceive('save')->with(m::on(function ($message) {
+                return strpos($message, 'joey') !== false;
+            }))->once();
 
-        // }
+            // $this->mockLogger->shouldReceive('save')
+            //     ->withArgs(function ($message, $account = 'joey') {
+            //         return strpos($message, $account) !== false;
+            //     });
+
+            $this->target->isValid('joey', 'wrong');
+        }
 
         public function givenPassword($account, $setPass)
         {
