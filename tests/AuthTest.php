@@ -57,17 +57,16 @@ namespace Tests {
             $this->givenPassword('joey', '91');
             $this->givenToken('000000');
 
-            $this->shouldLog('joey');
-
             $this->target->isValid('joey', 'wrong password');
 
+            $this->shouldLog('joey');
         }
 
         public function shouldLog($account)
         {
-            $this->mockLogger->shouldReceive('save')->with(m::on(function ($message) use ($account) {
+            $this->mockLogger->shouldHaveReceived('save')->with(m::on(function ($message) use ($account) {
                 return strpos($message, $account) !== false;
-            }))->once();
+            }));
         }
 
         public function givenPassword($account, $setPass)

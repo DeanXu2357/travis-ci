@@ -40,6 +40,7 @@ class AuthService
             return true;
         } else {
             $this->logger->save(sprintf("account: %s try to login failed", $account));
+            $this->logger->save(sprintf("account: %s try to login failed", $account));
             return false;
         }
     }
