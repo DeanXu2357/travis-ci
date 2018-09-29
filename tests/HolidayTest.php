@@ -26,38 +26,40 @@ class HolidayTest extends TestCase
             ]
         ];
 
-        // arrange
-        $target = new Holiday();
+        echo PHP_EOL;
 
-        foreach ($case as $value) {
+        foreach ($case as $index => $value) {
+            echo 'Case_' . (string)((integer)$index + 1) . PHP_EOL;
+            echo json_encode($value, JSON_UNESCAPED_UNICODE) . PHP_EOL;
+
+            // arrange
+            $target = new HolidayForTest();
             $excepted = $value['excepted'];
 
             # act
-            $target->setDate($value['date']);
+            $target->setToday($value['date']);
             $actual = $target->SayXmas();
+            echo 'Actual = ' . (string)$actual . PHP_EOL;
+            echo PHP_EOL;
 
             # assert
             $this->assertEquals($excepted, $actual);
         }
-
-        // act
-        // $actual = $target->SayXmas();
-
-        // assert
-        // $this->assertEquals($excepted, $actual);
     }
 }
 
-// # Stub Example
-// class HolidayForTest extends Holiday
-// {
-//     protected function getToday()
-//     {
-//         return $this->date('m-d');
-//     }
+# Stub Example
+# Extract And Override
+# 不適用 static or finall( php 沒有 )
+class HolidayForTest extends Holiday
+{
+    protected function getToday()
+    {
+        return $this->date;
+    }
 
-//     public function setToday($date)
-//     {
-//         $this->date = $date;
-//     }
-// }
+    public function setToday($date)
+    {
+        $this->date = $date;
+    }
+}

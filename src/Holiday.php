@@ -19,8 +19,6 @@ class Holiday
 
     public function SayXmas() : string
     {
-        // $date = $this->date;
-        // $date = date('m-d');
         $date = $this->getToday();
 
         if ($date == '12-25') {
@@ -28,11 +26,6 @@ class Holiday
         }
 
         return "Today is not Xmas";
-    }
-
-    public function setDate(string $date)
-    {
-        $this->date = $date;
     }
 
     protected function getToday()
