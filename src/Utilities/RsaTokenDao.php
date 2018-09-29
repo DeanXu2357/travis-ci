@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-class RsaTokenDao
+class RsaTokenDao implements \App\Interfaces\iToken
 {
     public function getRandom($account)
     {

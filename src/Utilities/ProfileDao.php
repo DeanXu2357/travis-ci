@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-class ProfileDao
+class ProfileDao implements \App\Interfaces\iProfile
 {
     public function getPassword($account)
     {
