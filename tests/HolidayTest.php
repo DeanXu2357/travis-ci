@@ -10,19 +10,30 @@ use PHPUnit\Framework\TestCase;
  */
 class HolidayTest extends TestCase
 {
+    private $target;
+    // private $actual;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->target = new HolidayForTest();
+    }
+
     /**
-     * @covers \App\HelloWord::say()
+     * @covers \App\HelloWord->SayXmas()
      */
     public function testSayXmas()
     {
         $case = [
             [
                 'excepted'  => 'Merry Xmas',
-                'date'      => '12-25'
+                'date'      => '12-25',
+                'des'       => 'test today is Xmas'
             ],
             [
                 'excepted'  => 'Today is not Xmas',
-                'date'      => date('1-9')
+                'date'      => '1-9',
+                'des'       => 'test today is not Xmas'
             ]
         ];
 
@@ -32,19 +43,23 @@ class HolidayTest extends TestCase
             echo 'Case_' . (string)((integer)$index + 1) . PHP_EOL;
             echo json_encode($value, JSON_UNESCAPED_UNICODE) . PHP_EOL;
 
-            // arrange
-            $target = new HolidayForTest();
-            $excepted = $value['excepted'];
+            $this->givenToday($value['date']);
+            $this->shouldResponse($value['excepted']);
 
-            # act
-            $target->setToday($value['date']);
-            $actual = $target->SayXmas();
-            echo 'Actual = ' . (string)$actual . PHP_EOL;
+            echo 'description:' . $value['des'] . PHP_EOL;
             echo PHP_EOL;
-
-            # assert
-            $this->assertEquals($excepted, $actual);
         }
+    }
+
+    private function givenToday($date)
+    {
+        $this->target->setToday($date);
+    }
+
+    private function shouldResponse($excepted)
+    {
+        $actual = $this->target->SayXmas();
+        $this->assertEquals($excepted, $actual);
     }
 }
 

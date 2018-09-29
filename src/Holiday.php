@@ -21,11 +21,22 @@ class Holiday
     {
         $date = $this->getToday();
 
-        if ($date == '12-25') {
+        if ($this->isXmas($date)) {
             return "Merry Xmas";
         }
 
         return "Today is not Xmas";
+    }
+
+    /**
+     * 是否為聖誕節
+     *
+     * @param string $date
+     * @return boolean
+     */
+    private function isXmas(string $date)
+    {
+        return $date == '12-25';
     }
 
     protected function getToday()
