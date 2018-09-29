@@ -32,7 +32,8 @@ namespace Tests {
             $this->stubProfile = m::mock(iProfile::class);
             $this->stubToken = m::mock(iToken::class);
 
-            $this->mockLogger = m::mock(ILogger::class);
+            // $this->mockLogger = m::mock(ILogger::class);
+            $this->mockLogger = m::spy(ILogger::class);
 
             $this->target = new AuthService(
                 $this->stubProfile,
@@ -56,16 +57,17 @@ namespace Tests {
             $this->givenPassword('joey', '91');
             $this->givenToken('000000');
 
-            $this->mockLogger->shouldReceive('save')->with(m::on(function ($message) {
-                return strpos($message, 'joey') !== false;
+            $this->shouldLog('joey');
+
+            $this->target->isValid('joey', 'wrong password');
+
+        }
+
+        public function shouldLog($account)
+        {
+            $this->mockLogger->shouldReceive('save')->with(m::on(function ($message) use ($account) {
+                return strpos($message, $account) !== false;
             }))->once();
-
-            // $this->mockLogger->shouldReceive('save')
-            //     ->withArgs(function ($message, $account = 'joey') {
-            //         return strpos($message, $account) !== false;
-            //     });
-
-            $this->target->isValid('joey', 'wrong');
         }
 
         public function givenPassword($account, $setPass)
