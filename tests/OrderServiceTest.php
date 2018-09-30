@@ -10,41 +10,50 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use App\Order;
 
 class OrderServiceTest extends TestCase
 {
+    private $target;
+
+    protected function setup()
+    {
+        $this->target = new OrderServiceForTets();
+    }
 
     /** @test */
     public function test_sync_book_orders_3_orders_only_2_book_order()
     {
-        // hard to isolate dependency to unit test
-        $target = new OrderServiceForTest();
-
-        $order1 = new Order();
-        $order1->type = 'Book';
-
-        $order2 = new Order();
-        $order2->type = 'Book';
-
-        $order3 = new Order();
-        $order3->type = 'Book';
-
-        $target->setOrders(
-            $order1,
-            $order2,
-            $order3
-        );
+        $this->givenOrders(['Book', 'CD', 'Book']);
 
         $spyBook = m::spy(IBook::class);
 
         $target->setBook($spyBook);
 
-        $target->syncBookOrders();
+        $this->target->syncBookOrders();
 
         $spyBook->shouldHaveReceive('insert')
             ->with(m::on(function ($order) {
                 return $order->type == 'Book';
             }))->twice();
+    }
+
+    protected function givenOrders($type)
+    {
+        $orders = [];
+        foreach ($type as $key => $value) {
+            $orders[] = $this->orderCreater($value);
+        }
+
+        $this->target->setOrders($orders);
+    }
+
+    protected function orderCreater($createType)
+    {
+        $order = new Order();
+        $order->type = $createType;
+
+        return $order;
     }
 }
 
